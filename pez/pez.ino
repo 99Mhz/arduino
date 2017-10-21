@@ -12,6 +12,7 @@
  * Programmed:  Arduino IDE 1.8.1 
  * Mechanical:  Power in used a Micro USB breakout https://www.adafruit.com/product/1833
  *              Servo https://www.ebay.com/itm/10pcs-x-9G-SG90-Mini-Micro-Servo-For-RC-Robot-Helicopter-Airplane-Car-Boat/122641411156
+ *              HC-SR04 https://www.sparkfun.com/products/13959 (or similar/ ebay has lots for very cheep)
  *              HC-SR04 VCC     -> trinket pin 5v
  *              HC-SR04 Trig    -> trinket pin 8
  *              HC-SR04 Echo    -> trinket pin 4
