@@ -14,10 +14,10 @@ Assumptions:
 
 Basic Workflow
 
-#declare REFRESH_DIVIDE 3
+#define REFRESH_DIVIDE 3
 
-char[] digitMap = [0x37, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7C, 0x07, 0x7F, 0x67]
-// zero   = segments a, b, c, d, e, f         = 0011:1111 = 0x37
+char[] digitMap = [0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7C, 0x07, 0x7F, 0x67]
+// zero   = segments a, b, c, d, e, f         = 0011:1111 = 0x3F
 // one    = segments b + c                    = 0000:0110 = 0x06
 // two    = segments a + b + d + e + g        = 0101:1011 = 0x5B
 // three  = segments a + b + c + d + g        = 0100:1111 = 0x4F
@@ -32,18 +32,13 @@ char segmentNumbers[] = [2, 1, 3, 4]
 char decimalCharacter = 0x80 // segment h = 1000:0000
 int activeSegment = 0 to 3
 volatile Bool switchSegment = false;  //used to signal a digit change
-volatile int refreshDivide = REFRESH_DIVIDE; //start here and see how it goes at 75Hz
 volatile bool readADC = false
 
 
-On timer0 interrupt:
+On MsTimer2 interrupt:
 //only change volatile variables, don’t set any pins/ports, delay too long etc.
-- Subtract 1 from refreshDivide
-- If refreshDivide == 0?
-    - YES
-        - Change the active segment to the next one
-        - switchSegment = true //flag for main loop to change segments. We want this ISR AFAP
-        - refreshDivide = REFRESH_DIVIDE
+    - Change the active segment to the next one
+    - switchSegment = true //flag for main loop to change segments. We want this ISR AFAP
 
 On timer1 interrupt:
 https://playground.arduino.cc/Code/Timer1
