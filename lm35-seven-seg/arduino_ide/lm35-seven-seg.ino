@@ -26,7 +26,7 @@ void nextSegment()
 
 void setup() {
     Serial.begin(9600);
-    MsTimer2::set(4, nextSegment); // 500ms period
+    MsTimer2::set(4, nextSegment); 
     MsTimer2::start();
 
     for (int i=0; i<14; i++)
@@ -65,7 +65,7 @@ void setPorts(uint8_t digit, uint8_t segment)
     digit = digitMap[segmentNumbers[index]];
     PORTD = digit << 2;
     PORTB = 0;
-
+    
     if (index == 1)
         digit |= (1 << decimalBit); //hard coded decimal point to second digit
 
@@ -99,3 +99,4 @@ void loop() {
         switchSegment = false;
     }
 }
+
