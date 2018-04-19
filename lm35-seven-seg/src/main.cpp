@@ -1,17 +1,18 @@
 #include <Arduino.h>
 #include <MsTimer2.h>
-#include <math.h>
+
+#define TEMPERATURE_READ_WAITS 250
 
 float temp = 0.0;
 uint8_t output = 1;
-uint8_t segmentNumbers[] = {1, 2, 3, 4};    //
+volatile char segmentNumbers[5] = {2, 5, 0, 0, 0};    //
 uint8_t digitMap[] =
     {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7C, 0x07, 0x7F, 0x67};
-uint8_t decimalCharacter = 0x80;            // segment h = 1000:0000
-volatile uint8_t activeSegment = 1;                  // 0 - 3
+uint8_t decimalBit = 7;                     // segment h = 1000:0000
+volatile uint8_t activeSegment = 1;         // 0 - 3
 volatile bool switchSegment = false;        // used to signal a digit change
 volatile bool readADC = false;              // should we get a new reading
-uint16_t interruptWaits = 250;
+uint16_t interruptWaits = TEMPERATURE_READ_WAITS;
 uint8_t staticTestDigit = 0;
 
 void nextSegment()
@@ -38,15 +39,13 @@ void setup() {
     maskHighDigit
     recursive function to save off the individule digits in a integer
  */
-void maskHighDigit(int number, int multiplier, int placement)
+void setDisplayBuffer(int number, int multiplier, int placement)
 {
-    uint8_t mostSignificantDigit = number/multiplier;
-    segmentNumbers[placement] = mostSignificantDigit;
-
-    uint8_t remainder = number % multiplier;
+    segmentNumbers[placement] = number/multiplier;
+    int remainingNumber = number % multiplier;
 
     if (multiplier > 1)
-        maskHighDigit(remainder, multiplier/10, ++placement);
+        setDisplayBuffer(remainingNumber, multiplier/10, ++placement);
 }
 
 /*
@@ -56,10 +55,18 @@ void maskHighDigit(int number, int multiplier, int placement)
 void setPorts(uint8_t digit, uint8_t segment)
 {
     int index = log(segment)/log(2);
+    // ^^^ same same
+    //if (segment == 8) index = 3;
+    //if (segment == 4) index = 2;
+    //if (segment == 2) index = 1;
+    //if (segment == 1) index = 0;
+
     digit = digitMap[segmentNumbers[index]];
-    //Serial.println(segment);
     PORTD = digit << 2;
     PORTB = 0;
+    if (index == 1)
+        digit |= (1 << decimalBit); //hard coded to second digit
+
     PORTB = ((digit >> 6) | (segment << 2));
     PORTB ^= (1 << 2);
     PORTB ^= (1 << 3);
@@ -77,18 +84,12 @@ void loop() {
                                 // Read analog pin
                                 // mV on A1 is a ratio of the full resolution of the ADC @ 5V
             temp = temp / 0.01; // we are left with .01 V/deg C
-            //Serial.println(temp);
-            interruptWaits = 250;
 
-            if(++staticTestDigit > 9)
-                staticTestDigit = 0;
-
-            maskHighDigit((int)(temp*100), 1000, 0);
-
-            char msg[1024];
-            sprintf(msg, "%d, %d, %d, %d\n", segmentNumbers[0], segmentNumbers[1], segmentNumbers[2], segmentNumbers[3]);
-
-            Serial.print(msg);
+            interruptWaits = TEMPERATURE_READ_WAITS; //reset our counter to delay again
+            Serial.println((int)(temp*100));
+            for(int i=0; i<5; i++)
+                segmentNumbers[i] = 0;
+            setDisplayBuffer((int)(temp*100), 1000, 0);
         }
         setPorts(digitMap[staticTestDigit], activeSegment);
         switchSegment = false;
