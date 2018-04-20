@@ -17,3 +17,10 @@ https://www.adafruit.com/product/880 :metal: <br />
 https://www.maximintegrated.com/en/app-notes/index.mvp/id/3210<br />
 https://www.sparkfun.com/datasheets/Components/General/COM-09622-MAX7219-MAX7221.pdf<br />
 https://www.sparkfun.com/products/9622 :rocket:<br />
+
+### Alternative Arduino IDE
+https://atom.io/<br />
+install as additional package:
+https://platformio.org/<br />
+get started video:
+https://www.youtube.com/watch?v=EIkGTwLOD7o :metal:
