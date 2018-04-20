@@ -24,3 +24,21 @@ install as additional package:
 https://platformio.org/<br />
 get started video:
 https://www.youtube.com/watch?v=EIkGTwLOD7o :metal:
+
+### Bitwise cheat sheet
+Set bit i in PORTB with OR
+```C
+PORTB |= (1 << i)
+```
+Toggle bit i in PORTB with XOR
+```C
+PORTB ^= (1 << i)
+```
+Clear bit i in PORTB with AND
+```C
+PORTB &= (1 << i)
+```
+Reverse bit i in PORTB with AND NOT
+```C
+PORTB &= ~(1 << i)
+```
