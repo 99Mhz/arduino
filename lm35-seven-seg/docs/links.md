@@ -1,17 +1,17 @@
-### Arduino language reference
+### Arduino language reference :sparkles:
 https://www.arduino.cc/reference/en/
 
-### ATmega328P Datasheet
+### ATmega328P Datasheet :octocat:
 http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-42735-8-bit-AVR-Microcontroller-ATmega328-328P_Datasheet.pdf
 
-### MsTimer2
+### MsTimer2 :sparkles:
 http://playground.arduino.cc/Main/MsTimer2
 
-### Other great evaluation boards
+### Other great evaluation boards :tada:
 https://www.pjrc.com/teensy/
 https://www.adafruit.com/category/943
 
-### Alternate designs to manual multiplexing
+### Alternate designs to manual multiplexing :metal:
 http://www.holtek.com/productdetail/-/vg/16K33
 https://www.adafruit.com/product/880
 
