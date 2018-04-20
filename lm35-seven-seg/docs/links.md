@@ -34,11 +34,7 @@ Toggle bit i in PORTB with XOR
 ```C
 PORTB ^= (1 << i)
 ```
-Clear bit i in PORTB with AND
-```C
-PORTB &= (1 << i)
-```
-Reverse bit i in PORTB with AND NOT
+Clear bit i in PORTB with AND NOT
 ```C
 PORTB &= ~(1 << i)
 ```
