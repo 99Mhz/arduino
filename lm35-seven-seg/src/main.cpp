@@ -2,6 +2,8 @@
 #include <MsTimer2.h>
 
 #define TEMPERATURE_READ_WAITS 250
+#define TIMER_TWO_MS_TIMEOUT 4
+#define SERIAL_SPEED 115200
 
 volatile char segmentNumbers[5] =
     {2, 5, 0, 0, 0}; //buffer for current numbers to display
@@ -10,23 +12,30 @@ uint8_t digitMap[] =
 uint8_t decimalBit = 7;                     // segment h = 1000:0000
 float temp = 0.0;
 uint8_t output = 1;
-volatile uint8_t activeSegment = 1;         // 0 - 3
+volatile uint8_t activeSegment = 1;         // 1 - 4
 volatile bool switchSegment = false;        // used to signal a digit change
 volatile bool readADC = false;              // should we get a new reading
 uint16_t interruptWaits = TEMPERATURE_READ_WAITS;
 uint8_t staticTestDigit = 0;
 
+/*
+    ISR nextSegment
+    bit shit segment to the left, or wrap right. signal to switch segments
+ */
 void nextSegment()
 {
     activeSegment <<= 1;
     if (activeSegment > 0b00001000)
         activeSegment = 0b00000001;
-    switchSegment = true; //flag for main loop to change segments. We want this ISR AFAP
+    switchSegment = true; //flag for main loop to change segments
 }
 
+/*
+    Set up our application.
+ */
 void setup() {
-    Serial.begin(9600);
-    MsTimer2::set(4, nextSegment); // 500ms period
+    Serial.begin(SERIAL_SPEED);
+    MsTimer2::set(TIMER_TWO_MS_TIMEOUT, nextSegment); // 500ms period
     MsTimer2::start();
 
     for (int i=0; i<14; i++)
@@ -78,6 +87,9 @@ void setPorts(uint8_t digit, uint8_t segment)
     PORTB ^= (1 << 5);
 }
 
+/*
+    main loop of the application. runs forever
+ */
 void loop() {
 
     if (switchSegment)
